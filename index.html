@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora de Tanque</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f2f2f2;
+      color: #333;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #005bea;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Calculadora de Peso do Tanque</h2>
+
+    <label for="tanque">Escolha o Tanque:</label>
+    <select id="tanque">
+      <option value="acido">Tanque de Ácido</option>
+      <option value="antiespumante">Tanque de Antiespumante</option>
+    </select>
+
+    <label for="porcentagem">Porcentagem no Tanque (%):</label>
+    <input type="number" id="porcentagem" placeholder="Ex: 69" min="0" max="100"/>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div class="result" id="resultado"></div>
+  </div>
+
+  <script>
+    function calcular() {
+      const tanque = document.getElementById('tanque').value;
+      const porcentagem = parseFloat(document.getElementById('porcentagem').value);
+
+      if (isNaN(porcentagem) || porcentagem < 0 || porcentagem > 100) {
+        document.getElementById('resultado').innerText = "Digite uma porcentagem válida (0-100).";
+        return;
+      }
+
+      let resultado = 0;
+
+      if (tanque === 'acido') {
+        // Fórmula aproximada do tanque de ácido baseado na sua planilha:
+        // Entrada: altura = 131, fórmula baseada na planilha que usa atingir meta
+        const h = 131;
+        // Função polinomial extraída da planilha original com meta reversa
+        resultado = 0.0001730136 * Math.pow(h * (porcentagem / 100), 3)
+                  - 0.060667 * Math.pow(h * (porcentagem / 100), 2)
+                  + 8.16004 * h * (porcentagem / 100)
+                  - 132.916;
+      }
+
+      if (tanque === 'antiespumante') {
+        // Tanque de antiespumante da aba 8: Altura h = 8m, AE VOL = 6500 L
+        const h = 8;
+        const volume_total = 6500;
+        resultado = (porcentagem / 100) * volume_total * 1.01; // ajuste de densidade leve
+      }
+
+      document.getElementById('resultado').innerText = 
+        `Peso estimado: ${resultado.toFixed(2)} kg`;
+    }
+  </script>
+</body>
+</html>
